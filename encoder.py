@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import torch
+from tqdm import tqdm
 from scipy.misc import imsave
 from scipy.sparse import coo_matrix
 
@@ -51,7 +52,7 @@ def encode(inpt, resolution, width, consider=5, save=False):
     data['long'] = ((data['long'] + 180) * resolution).astype(int)
 
     ret = torch.empty((0, width, width))
-    for start in range(len(data) - consider):
+    for start in tqdm(range(len(data) - consider)):
         sparse = coo_matrix((360 * resolution, 180 * resolution), dtype=np.int)
         for order, (lat, long) in enumerate(
                 zip(data['lat'][start:start + consider], data['long'][start:start + consider])):
@@ -59,7 +60,8 @@ def encode(inpt, resolution, width, consider=5, save=False):
             sparse.col = np.append(sparse.col, long)
             sparse.data = np.append(sparse.data, order)
 
-        center = centroid(data, start, start + consider)
+        # center = centroid(data, start, start + consider)
+        center = (sparse.row[0], sparse.col[0])
         count = 0
         cropped = crop(sparse, center, width)
         if save:
@@ -87,4 +89,4 @@ if __name__ == '__main__':
         print('Input File Does Not Exist.')
         exit(-1)
     else:
-        encode(sys.argv[1], int(1e5), 100, save=True)
+        encode(sys.argv[1], int(25000), 400, save=True)
