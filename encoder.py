@@ -11,7 +11,7 @@ def centroid(data, l, u):
 
 def draw_dot(matrix, pos, value):
     x, y = pos
-    depth = 255 - 25 * value
+    depth = 255 - 50 * value
 
     def softset(x, y):
         try:
