@@ -54,14 +54,13 @@ def encode(inpt, resolution, width, consider=5, save=False):
     ret = torch.empty((0, width, width))
     for start in tqdm(range(len(data) - consider)):
         sparse = coo_matrix((360 * resolution, 180 * resolution), dtype=np.int)
-        for order, (lat, long) in enumerate(
-                zip(data['lat'][start:start + consider], data['long'][start:start + consider])):
+        for order, (lat, long) in enumerate(zip(data['lat'][start:start + consider], data['long'][start:start + consider])):
             sparse.row = np.append(sparse.row, lat)
             sparse.col = np.append(sparse.col, long)
             sparse.data = np.append(sparse.data, order)
 
         # center = centroid(data, start, start + consider)
-        center = (sparse.row[0], sparse.col[0])
+        center = (sparse.row[-1], sparse.col[-1])
         count = 0
         cropped = crop(sparse, center, width)
         if save:
