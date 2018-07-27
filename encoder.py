@@ -12,7 +12,7 @@ def centroid(data, l, u):
 
 def draw_dot(matrix, pos, value):
     x, y = pos
-    depth = 255 - 50 * value
+    depth = 135 + 30 * value
 
     def softset(x, y):
         try:
@@ -43,7 +43,6 @@ def crop(sparse, center, width):
 
 
 def encode(inpt, resolution, width, consider=5, save=False):
-    global count
     # processing data
     data = pd.read_csv(inpt, header=None).drop(columns=[4, 6, 7, 8])
     data.columns = ['route', 'timestamp', 'long', 'lat', 'velocity']
@@ -61,7 +60,6 @@ def encode(inpt, resolution, width, consider=5, save=False):
 
         # center = centroid(data, start, start + consider)
         center = (sparse.row[-1], sparse.col[-1])
-        count = 0
         cropped = crop(sparse, center, width)
         if save:
             imsave('%d.png' % start, cropped)
