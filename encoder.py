@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import torch
-from tqdm import tqdm
 from scipy.misc import imsave
 from scipy.sparse import coo_matrix
+from tqdm import tqdm
 
 
 def centroid(data, l, u):
@@ -53,7 +53,8 @@ def encode(inpt, resolution, width, consider=5, save=False):
     ret = torch.empty((0, width, width))
     for start in tqdm(range(len(data) - consider)):
         sparse = coo_matrix((360 * resolution, 180 * resolution), dtype=np.int)
-        for order, (lat, long) in enumerate(zip(data['lat'][start:start + consider], data['long'][start:start + consider])):
+        for order, (lat, long) in enumerate(
+                zip(data['lat'][start:start + consider], data['long'][start:start + consider])):
             sparse.row = np.append(sparse.row, lat)
             sparse.col = np.append(sparse.col, long)
             sparse.data = np.append(sparse.data, order)
