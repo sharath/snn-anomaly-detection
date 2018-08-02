@@ -47,10 +47,8 @@ class GeospatialCoordinateEncoder:
 
         bitFn = lambda coordinate: self._bitForCoordinate(coordinate, self.n)
         indices = np.array([bitFn(w) for w in winners])
-        print(len(indices))
-
-    #        output[:] = 0
-    #       output[indices] = 1
+        output[:] = 0
+        output[indices] = 1
 
     def _neighbors(self, coordinate, radius):
         ranges = (xrange(n - radius, n + radius + 1) for n in coordinate.tolist())
@@ -93,6 +91,8 @@ if __name__ == '__main__':
     data.columns = ['route', 'timestamp', 'long', 'lat', 'velocity']
     data['timestamp'] = (data['timestamp'] * 1e-3).astype(int)
 
-    inputData = (data['velocity'].tolist(), data['long'].tolist(), data['lat'].tolist())
-    output = np.zeros(5)
-    enc.encodeIntoArray(inputData, output)
+    for v, lat, long in zip(data['velocity'].tolist(), data['long'].tolist(), data['lat'].tolist()):
+        output = np.zeros(1000)
+        enc.encodeIntoArray((v, lat, long), output)
+
+    # run with python numenta_encoder.py dataset/track1.csv
