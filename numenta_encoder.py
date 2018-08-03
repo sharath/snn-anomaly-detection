@@ -85,6 +85,21 @@ class GeospatialCoordinateEncoder:
         minRadius = int(math.ceil((math.sqrt(self.w) - 1) / 2))
         return max(radius, minRadius)
 
+    
+# for when i figure out how to use python 2 with python 3
+def encode(speed, long, lat, fname=None):
+    enc = GeospatialCoordinateEncoder()
+    values = []
+    for fn, (v, lat, long) in enumerate(zip(speed, long, lat)):
+        output = np.zeros(1000)
+        enc.encodeIntoArray((v, lat, long), output)
+        values.append(output.tolist())
+    
+    ret = torch.tensor(values)
+    if fname != None:
+        with open(fname, 'wb') as f:
+            pickle.dump(ret, f)
+    return ret
 
 if __name__ == '__main__':
     assert len(sys.argv) == 3
@@ -92,11 +107,9 @@ if __name__ == '__main__':
     fname = sys.argv[2]
 
     enc = GeospatialCoordinateEncoder()
-    data = pd.read_csv(inpt, header=None).drop(columns=[4, 6, 7, 8])
-    data.columns = ['route', 'timestamp', 'long', 'lat', 'velocity']
-    data['timestamp'] = (data['timestamp'] * 1e-3).astype(int)
+    data = pd.read_csv(inpt)
     values = []
-    for fn, (v, lat, long) in enumerate(zip(data['velocity'].tolist(), data['long'].tolist(), data['lat'].tolist())):
+    for fn, (v, lat, long) in enumerate(zip(data['speed'].tolist(), data['long'].tolist(), data['lat'].tolist())):
         print(fn)
         output = np.zeros(1000)
         enc.encodeIntoArray((v, lat, long), output)
