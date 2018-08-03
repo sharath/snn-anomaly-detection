@@ -2,12 +2,12 @@ import hashlib
 import itertools
 import math
 import sys
-
+import torch
 import numpy as np
 import pandas as pd
 from nupic.bindings.math import Random
 from pyproj import Proj, transform
-
+import pickle
 
 class GeospatialCoordinateEncoder:
     def __init__(self,
@@ -60,9 +60,11 @@ class GeospatialCoordinateEncoder:
         return hash
 
     def _bitForCoordinate(self, coordinate, n):
+        # TODO : rewrite without nupic.bindings
         seed = self._hashCoordinate(coordinate)
         rng = Random(seed)
-        return rng.getUInt32(n)
+        k = rng.getUInt32(n)
+        return k
 
     def coordinateForPosition(self, longitude, latitude, altitude=None):
         PROJ = Proj(init="epsg:3785")  # Spherical Mercator
@@ -85,14 +87,22 @@ class GeospatialCoordinateEncoder:
 
 
 if __name__ == '__main__':
+    assert len(sys.argv) == 3
     inpt = sys.argv[1]
+    fname = sys.argv[2]
+
     enc = GeospatialCoordinateEncoder()
     data = pd.read_csv(inpt, header=None).drop(columns=[4, 6, 7, 8])
     data.columns = ['route', 'timestamp', 'long', 'lat', 'velocity']
     data['timestamp'] = (data['timestamp'] * 1e-3).astype(int)
-
-    for v, lat, long in zip(data['velocity'].tolist(), data['long'].tolist(), data['lat'].tolist()):
+    values = []
+    for fn, (v, lat, long) in enumerate(zip(data['velocity'].tolist(), data['long'].tolist(), data['lat'].tolist())):
+        print(fn)
         output = np.zeros(1000)
         enc.encodeIntoArray((v, lat, long), output)
+        values.append(output.tolist())
 
-    # run with python numenta_encoder.py dataset/track1.csv
+    with open(fname, 'wb') as f:
+        pickle.dump(torch.tensor(values), f)
+
+    # run with python numenta_encoder.py dataset/track1.csv encoding/track1_numenta.p
