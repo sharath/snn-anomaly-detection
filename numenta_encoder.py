@@ -116,6 +116,7 @@ if __name__ == '__main__':
         values.append(output.tolist())
 
     with open(fname, 'wb') as f:
-        pickle.dump(torch.tensor(values), f)
-
+    #    pickle.dump(torch.tensor(values), f)
+    	tosave = torch.tensor(values)
+    	torch.save(tosave, f)
     # run with python numenta_encoder.py dataset/track1.csv encoding/track1_numenta.p
