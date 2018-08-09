@@ -4,6 +4,7 @@ from operator  import mul
 from functools import reduce
 from abc import ABC, abstractmethod
 from typing import Iterable, Optional
+from numpy import e as E
 
 
 class Nodes(ABC):
@@ -418,7 +419,7 @@ class AdaptiveLIFNodes(Nodes):
         :param dt: Simulation time step.
         """
         # vary theta decay based on value of theta
-        theta_decay = torch.exp(theta - 1)/torch.exp(49)
+        self.theta_decay = (E**(self.theta - 1))/(E**49)
         
         # Decay voltages and adaptive thresholds.
         self.v -= dt * self.decay * (self.v - self.rest)

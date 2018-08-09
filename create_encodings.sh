@@ -10,3 +10,4 @@ python numenta_encoder.py dataset/track08.csv encoding/track08_train.p
 python numenta_encoder.py dataset/track09.csv encoding/track09_train.p
 python numenta_encoder.py dataset/track10.csv encoding/track10_train.p
 python numenta_encoder.py dataset/track01_reversed.csv encoding/track01_reversed.p
+python numenta_encoder.py dataset/track01_test.csv encoding/track01_test.p
