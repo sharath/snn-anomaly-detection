@@ -417,6 +417,9 @@ class AdaptiveLIFNodes(Nodes):
         :param inpts: Inputs to the layer.
         :param dt: Simulation time step.
         """
+        # vary theta decay based on value of theta
+        theta_decay = torch.exp(theta - 1)/torch.exp(49)
+        
         # Decay voltages and adaptive thresholds.
         self.v -= dt * self.decay * (self.v - self.rest)
         self.theta -= dt * self.theta_decay * self.theta

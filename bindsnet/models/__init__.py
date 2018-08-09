@@ -5,7 +5,7 @@ import torch
 from ..network import Network
 from ..learning import post_pre
 from ..network.topology import Connection
-from ..network.nodes import Input, LIFNodes, DiehlAndCookNodes
+from ..network.nodes import Input, LIFNodes, DiehlAndCookNodes, AdaptiveLIFNodes
 
 
 class TwoLayerNetwork(Network):
@@ -108,7 +108,13 @@ class DiehlAndCook2015(Network):
                             source='Ai', target='Ae')
 
         
+        
 class GPSModel(Network):
+    # language=rst
+    """
+    Implements the spiking neural network architecture from `(Diehl & Cook 2015)
+    <https://www.frontiersin.org/articles/10.3389/fncom.2015.00099/full>`_.
+    """
     def __init__(self, n_inpt: int, n_neurons: int = 100, exc: float = 22.5, inh: float = 17.5, dt: float = 1.0,
                  nu_pre: float = 1e-4, nu_post: float = 1e-2, wmin: float = 0.0, wmax: float = 1.0, norm: float = 78.4,
                  theta_plus: float = 0.05, theta_decay: float = 1e-7, X_Ae_decay: Optional[float] = None,
@@ -142,8 +148,8 @@ class GPSModel(Network):
         self.dt = dt
         
         self.add_layer(Input(n=self.n_inpt, traces=True, trace_tc=5e-2), name='X')
-        self.add_layer(LIFNodes(n=self.n_neurons, traces=True, rest=-65.0, reset=-60.0, thresh=-52.0, refrac=5,
-                                         decay=1e-2, trace_tc=5e-2),
+        self.add_layer(AdaptiveLIFNodes(n=self.n_neurons, traces=True, rest=-65.0, reset=-60.0, thresh=-52.0, refrac=5,
+                                         decay=1e-2, trace_tc=5e-2, theta_plus=theta_plus, theta_decay=theta_decay),
                        name='Ae')
         
         self.add_layer(LIFNodes(n=self.n_neurons, traces=False, rest=-60.0, reset=-45.0, thresh=-40.0, decay=1e-1,

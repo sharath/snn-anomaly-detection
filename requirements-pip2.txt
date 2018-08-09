@@ -1,0 +1,6 @@
+nupic.bindings
+torch
+numpy
+pandas
+pyproj
+tqdm
