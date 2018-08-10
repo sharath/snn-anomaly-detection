@@ -6,8 +6,9 @@ import torch
 import numpy as np
 import pandas as pd
 from nupic.bindings.math import Random
+from tqdm import tqdm
 from pyproj import Proj, transform
-import pickle
+import os
 
 class GeospatialCoordinateEncoder:
     def __init__(self,
@@ -85,21 +86,6 @@ class GeospatialCoordinateEncoder:
         minRadius = int(math.ceil((math.sqrt(self.w) - 1) / 2))
         return max(radius, minRadius)
 
-    
-# for when i figure out how to use python 2 with python 3
-def encode(speed, long, lat, fname=None):
-    enc = GeospatialCoordinateEncoder()
-    values = []
-    for fn, (v, lat, long) in enumerate(zip(speed, long, lat)):
-        output = np.zeros(1000)
-        enc.encodeIntoArray((v, lat, long), output)
-        values.append(output.tolist())
-    
-    ret = torch.tensor(values)
-    if fname != None:
-        with open(fname, 'wb') as f:
-            pickle.dump(ret, f)
-    return ret
 
 if __name__ == '__main__':
     assert len(sys.argv) == 3
@@ -109,14 +95,14 @@ if __name__ == '__main__':
     enc = GeospatialCoordinateEncoder()
     data = pd.read_csv(inpt)
     values = []
-    for fn, (v, lat, long) in enumerate(zip(data['speed'].tolist(), data['long'].tolist(), data['lat'].tolist())):
-        print(fn)
+    # os.system('cls' if os.name == 'nt' else 'clear')
+    for v, lat, long in tqdm((zip(data['speed'].tolist(), data['long'].tolist(), data['lat'].tolist())), unit='Encodings'):
         output = np.zeros(1000)
         enc.encodeIntoArray((v, lat, long), output)
         values.append(output.tolist())
 
     with open(fname, 'wb') as f:
-    #    pickle.dump(torch.tensor(values), f)
     	tosave = torch.tensor(values)
     	torch.save(tosave, f)
-    # run with python numenta_encoder.py dataset/track1.csv encoding/track1_numenta.p
+
+    # need apt-get install cython

@@ -1,3 +1,4 @@
+numenta/
 *.png
 .idea/
 __pycache__/

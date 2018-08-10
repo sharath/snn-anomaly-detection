@@ -148,7 +148,7 @@ class GPSModel(Network):
         self.dt = dt
         
         self.add_layer(Input(n=self.n_inpt, traces=True, trace_tc=5e-2), name='X')
-        self.add_layer(AdaptiveLIFNodes(n=self.n_neurons, traces=True, rest=-65.0, reset=-60.0, thresh=-52.0, refrac=5,
+        self.add_layer(DiehlAndCookNodes(n=self.n_neurons, traces=True, rest=-65.0, reset=-60.0, thresh=-52.0, refrac=5,
                                          decay=1e-2, trace_tc=5e-2, theta_plus=theta_plus, theta_decay=theta_decay),
                        name='Ae')
         
@@ -161,7 +161,7 @@ class GPSModel(Network):
                                        nu_pre=nu_pre, nu_post=nu_post, wmin=wmin, wmax=wmax, norm=norm,
                                        decay=X_Ae_decay),
                             source='X', target='Ae')
-        
+
         w = self.exc * torch.diag(torch.ones(self.n_neurons))
         self.add_connection(Connection(source=self.layers['Ae'], target=self.layers['Ai'], w=w, wmin=0, wmax=self.exc,
                                        decay=Ae_Ai_decay),

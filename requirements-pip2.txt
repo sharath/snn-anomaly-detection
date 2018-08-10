@@ -1,6 +1,7 @@
-nupic.bindings
 torch
 numpy
 pandas
-pyproj
+cython
+nupic.bindings
 tqdm
+pyproj
