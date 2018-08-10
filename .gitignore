@@ -8,3 +8,5 @@ __pycache__/
 *.p
 output/
 venv/
+logs/
+old/

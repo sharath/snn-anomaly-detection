@@ -161,7 +161,7 @@ class GPSModel(Network):
                                        nu_pre=nu_pre, nu_post=nu_post, wmin=wmin, wmax=wmax, norm=norm,
                                        decay=X_Ae_decay),
                             source='X', target='Ae')
-
+        
         w = self.exc * torch.diag(torch.ones(self.n_neurons))
         self.add_connection(Connection(source=self.layers['Ae'], target=self.layers['Ai'], w=w, wmin=0, wmax=self.exc,
                                        decay=Ae_Ai_decay),

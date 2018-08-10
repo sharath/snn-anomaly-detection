@@ -419,7 +419,8 @@ class AdaptiveLIFNodes(Nodes):
         :param dt: Simulation time step.
         """
         # vary theta decay based on value of theta
-        self.theta_decay = (E**(self.theta - 1))/(E**49)
+        # self.theta_decay = 0.00396825*self.theta + 0.206349
+        # self.theta_decay = 0.000490195*self.theta + 0.0254902
         
         # Decay voltages and adaptive thresholds.
         self.v -= dt * self.decay * (self.v - self.rest)
