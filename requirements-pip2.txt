@@ -1,7 +1,0 @@
-torch
-numpy
-pandas
-cython
-nupic.bindings
-tqdm
-pyproj
