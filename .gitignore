@@ -8,7 +8,7 @@ __pycache__/
 *.net
 *.p
 encoding/
-output/
+graphs/
 venv/
 logs/
 old/
